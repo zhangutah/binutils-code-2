@@ -3,6 +3,9 @@
 
 #### max_open_files
 
+Related code: https://github.com/zhangutah/binutils-code-2/blob/main/bfd/cache.c#L70
+
+max_open_files is initialized to 0 at first and is changed in following code, resulting different value/branch for the next loop. 
 
 static int max_open_files = 0;
 ```
