@@ -65,6 +65,9 @@ static bool inited = false;
 
 ### Memory allocation and deallocation (malloc & free)
 
+NOTE: When objdump releases memory, it doesn't really reset to 0, and objalloc_free_block will select different branches according to different memory values.
+The memory residual information of the last cycle will have an impact for objalloc_free_block behavior.
+
 ```
 0x0000000000692728 in objalloc_free_block (o=0x7f87b0, block=0x7f8800) at ./objalloc.c:206
 206       for (p = (struct objalloc_chunk *) o->chunks; p != NULL; p = p->next)
