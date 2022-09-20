@@ -1,4 +1,88 @@
-		   README for GNU development tools
+### Static/Global variables
+
+
+#### max_open_files
+
+
+static int max_open_files = 0;
+```
+#0  0x0000000000650365 in bfd_cache_max_open () at cache.c:113
+#1  0x0000000000650142 in bfd_cache_init (abfd=abfd@entry=0x7f7670) at cache.c:498
+#2  0x00000000005052ac in bfd_fopen (filename=filename@entry=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=<optimized out>, target@entry=0x0, mode=0x7b100c "r", fd=fd@entry=-1) at opncls.c:279
+#3  0x0000000000505526 in bfd_openr (filename=0x7f7670 "\340w\177", filename@entry=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=0x7b100c "r", target@entry=0x0) at opncls.c:322
+#4  0x000000000040904b in display_file (filename=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=target@entry=0x0, last_file=true) at ./objdump.c:5330
+#5  0x0000000000407a8c in main (argc=<optimized out>, argv=<optimized out>) at ./objdump.c:5706
+```
+
+#### ihex_init.inited
+
+static bool inited;
+
+```
+#0  0x00000000005106af in ihex_init () at ihex.c:170
+#1  ihex_object_p (abfd=0x7f7670) at ihex.c:494
+#2  0x00000000004ff8c7 in bfd_check_format_matches (abfd=<optimized out>, abfd@entry=0x7f7670, format=<optimized out>, format@entry=b
+fd_object, matching=matching@entry=0x7fffffffdde0) at format.c:344
+#3  0x000000000040928e in display_object_bfd (abfd=0x7f7670) at ./objdump.c:5224
+#4  display_any_bfd (file=file@entry=0x7f7670, level=level@entry=0) at ./objdump.c:5316
+#5  0x0000000000409078 in display_file (filename=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=<optimized out>, target@entry=0x0,
+last_file=true) at ./objdump.c:5337
+#6  0x0000000000407a8c in main (argc=<optimized out>, argv=<optimized out>) at ./objdump.c:5706
+```
+
+
+#### srec_init.inited
+
+static bool inited = false;
+
+```
+#0  0x0000000000514b2e in srec_init () at srec.c:188
+#1  symbolsrec_object_p (abfd=0x7f7670) at srec.c:683
+#2  0x00000000004ff8c7 in bfd_check_format_matches (abfd=<optimized out>, abfd@entry=0x7f7670, format=<optimized out>, format@entry=bfd_object, matching=matching@entry=0x7fffffffdde0) at format.c:344
+#3  0x000000000040928e in display_object_bfd (abfd=0x7f7670) at ./objdump.c:5224
+#4  display_any_bfd (file=file@entry=0x7f7670, level=level@entry=0) at ./objdump.c:5316
+#5  0x0000000000409078 in display_file (filename=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=<optimized out>, target@entry=0x0, last_file=true) at ./objdump.c:5337
+#6  0x0000000000407a8c in main (argc=<optimized out>, argv=<optimized out>) at ./objdump.c:5706
+```
+
+#### tekhex_init.inited
+
+static bool inited = false;
+
+```
+#0  0x00000000005194ee in tekhex_init () at tekhex.c:228
+#1  0x0000000000517412 in tekhex_object_p (abfd=0x7f7670) at tekhex.c:608
+#2  0x00000000004ff8c7 in bfd_check_format_matches (abfd=<optimized out>, abfd@entry=0x7f7670, format=<optimized out>, format@entry=bfd_object, matching=matching@entry=0x7fffffffdde0) at format.c:344
+#3  0x000000000040928e in display_object_bfd (abfd=0x7f7670) at ./objdump.c:5224
+#4  display_any_bfd (file=file@entry=0x7f7670, level=level@entry=0) at ./objdump.c:5316
+#5  0x0000000000409078 in display_file (filename=0x7fffffffe34a "/dev/shm/afl_per_out_FS", target=<optimized out>, target@entry=0x0, last_file=true) at ./objdump.c:5337
+#6  0x0000000000407a8c in main (argc=<optimized out>, argv=<optimized out>) at ./objdump.c:5706
+```
+
+
+### Memory allocation and deallocation (malloc & free)
+
+```
+0x0000000000692728 in objalloc_free_block (o=0x7f87b0, block=0x7f8800) at ./objalloc.c:206
+206       for (p = (struct objalloc_chunk *) o->chunks; p != NULL; p = p->next)
+(gdb) bt
+#0  0x0000000000692728 in objalloc_free_block (o=0x7f87b0, block=0x7f8800) at ./objalloc.c:206
+#1  0x0000000000512053 in bfd_release (abfd=abfd@entry=0x7f8670, block=block@entry=0x7f8800) at opncls.c:1069
+#2  0x000000000062934f in coff_real_object_p (abfd=abfd@entry=0x7f8670, nscns=<optimized out>, nscns@entry=255, internal_f=<optimized out>, internal_f@entry=0x7fffffffd900, internal_a=<optimized out>) at coffgen.c:307
+#3  0x0000000000629ad8 in coff_object_p (abfd=0x7f8670) at coffgen.c:374
+#4  0x0000000000501827 in bfd_check_format_matches (abfd=<optimized out>, abfd@entry=0x7f8670, format=<optimized out>, format@entry=bfd_object, matching=matching@entry=0x7fffffffddc0) at format.c:344
+#5  0x000000000040946e in display_object_bfd (abfd=0x7f8670) at ./objdump.c:5224
+#6  display_any_bfd (file=file@entry=0x7f8670, level=level@entry=0) at ./objdump.c:5316
+#7  0x0000000000409258 in display_file (filename=0x7fffffffe331 "/dev/shm/afl_per_out_FS", target=<optimized out>, target@entry=0x0, last_file=true) at ./objdump.c:5337
+#8  0x0000000000407c6c in main (argc=<optimized out>, argv=<optimized out>) at ./objdump.c:5706
+```
+
+
+
+
+=================  original README  ==============
+
+README for GNU development tools
 
 This directory contains various GNU compilers, assemblers, linkers, 
 debuggers, etc., plus their support routines, definitions, and documentation.
