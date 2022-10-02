@@ -19,6 +19,8 @@ static int max_open_files = 0;
 
 #### ihex_init.inited
 
+related file: https://github.com/zhangutah/binutils-code-2/blob/main/bfd/ihex.c#L163
+
 static bool inited;
 
 ```
